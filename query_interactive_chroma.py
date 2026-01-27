@@ -59,7 +59,7 @@ while True:
     
     shown = 0
     for doc_id, distance, metadata, document in reversed(res):
-      print(f"{distance:.4f} {metadata['file_path']} {metadata['config']}")
+      print(f"{distance:.4f} {metadata['file_path']} {metadata['oneline']}")
 
     print(f" {res_len} | {time.time() - start_time:.3f} | {100 * shown / res_len:.2f}%")
 

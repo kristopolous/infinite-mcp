@@ -75,7 +75,11 @@ while True:
 
             encoding = detect_encoding(fp) 
             with open(config, 'r', encoding=encoding, errors='replace') as f:
-              configs.append(f.read())
+              lines = []
+              for what in f.readlines():
+                if "`" not in what:
+                  lines.append(what)
+              configs.append("\n".join(lines))
 
             with open(oneline, 'r', encoding=encoding, errors='replace') as f:
               onelines.append(f.read())
