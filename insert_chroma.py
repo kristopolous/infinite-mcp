@@ -79,21 +79,21 @@ while True:
               for what in f.readlines():
                 if "`" not in what:
                   lines.append(what)
-              config.append(re.sub(r'/\s+/', ' ', " ".join(lines)))
+              configs.append(re.sub(r'\s+', ' ', " ".join(lines)))
 
             with open(oneline, 'r', encoding=encoding, errors='replace') as f:
               lines = []
               for what in f.readlines():
                 if "`" not in what:
                   lines.append(what)
-              onelines.append(re.sub(r'/\s+/', ' ', " ".join(lines)))
+              onelines.append(re.sub(r'\s+', ' ', " ".join(lines)))
 
             with open(fp, 'r', encoding=encoding, errors='replace') as f:
                 processed_text = f.read()
                 texts.append(processed_text)
             valid_paths.append(str(fp))
         except Exception as e:
-            print(f"{fp} => {e}")
+          print(f"{fp} => {e}")
     
     if len(texts) == 0:
         break

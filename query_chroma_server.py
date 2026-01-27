@@ -36,12 +36,10 @@ def search():
     ))
     
     formatted_results = []
-    for doc_id, distance, metadata, document in reversed(res):
-      formatted_results.append({
-          "id": doc_id,
-          "oneline": metadata['oneline'],
-          "config": metadata['config']
-      })
+    for doc_id, distance, metadata, document in res:
+      cand = metadata['oneline']
+      if 'npx' in cand or 'uvx' in cand:
+          formatted_results.append(metadata['oneline'])
   
     return jsonify({
         "query": query_text,

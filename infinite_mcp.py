@@ -20,7 +20,7 @@ from typing import Any
 import asyncio
 
 # Configuration
-SEARCH_API_URL = "http://localhost:5000/search"
+SEARCH_API_URL = "https://day50.dev/infinite/search"
 
 app = Server("infinitemcp")
 

@@ -22,7 +22,7 @@ readline.set_history_length(1000)
 readline.set_auto_history(False)
 
 atexit.register(readline.write_history_file, HISTORY_FILE)
-RES_START = 100
+RES_START = 4
 res_len = RES_START
 
 def quit():
@@ -34,6 +34,7 @@ client = chromadb.PersistentClient(path="./chroma_db")
 collection = client.get_collection(name="documents")
 model = common.model
 
+start_time=time.time()
 query_last=None
 query=""
 while True:
@@ -58,7 +59,7 @@ while True:
     
     shown = 0
     for doc_id, distance, metadata, document in reversed(res):
-      print(f"{distance:.4f} {metadata['file_path']} {metadata['oneline']}")
+      print(f"{metadata['oneline']}")
 
     print(f" {res_len} | {time.time() - start_time:.3f} | {100 * shown / res_len:.2f}%")
 
