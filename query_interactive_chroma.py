@@ -40,7 +40,6 @@ while True:
   try:
     reshow = False
     processed_query = input("🤔 ▶ ").strip()
-    start_time = time.time()
 
     query_embedding = model.encode(processed_query)
 
