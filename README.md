@@ -67,6 +67,7 @@ InfiniteMCP exposes three powerful tools to Claude:
 - Node.js 18+ (for running discovered MCP servers)
 
 ### Setup
+Local install requires a CUDA core
 
 ```bash
 # Clone the repository
@@ -77,10 +78,7 @@ cd infinitemcp
 pip install -r requirements.txt
 
 # Build the MCP server index (one-time setup)
-./scripts/build_index.sh
-
-# Start the MCP server
-python -m infinitemcp
+./extracto
 ```
 
 ## Usage
