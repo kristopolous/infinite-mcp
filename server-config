@@ -1,0 +1,37 @@
+#!/bin/bash
+#| awk 'BEGIN { show=0; } { if ($1 == "Overview") { show = 1;  } else if ( $0 ~ /© 2025 MCP.so/ ) { show = 0 } else if ( show == 1) { print $0 } } ' | less
+
+server=http://localhost:8080
+server=https://openrouter.ai/api
+models=( $(llcat -su $server -m | grep :free | shuf) )
+model=nvidia/nemotron-3-nano-30b-a3b:free #google/gemini-2.0-flash-exp:free
+#model=qwen3-vl:4b
+#server=http://10.0.0.221:11434
+n=0
+find gh -mindepth 3 -maxdepth 3 -iname README.md | shuf | while read i; do
+  base=$(dirname "$i")
+  conf="$base/_mcp-config.json" 
+  if [[ -s "$conf" ]] ; then
+    jq . "$conf" >/dev/null || rm $conf
+  fi
+  if [[ ! -s "$base/_mcp-config.json" ]] ; then
+    mq '.code | select(contains("args"))' "$i" | grep -v "\`" > "$base/_mcp-config.json"
+    if [[ ! -s "$base/_mcp-config.json" ]] ; then
+      cat "$i" | timeout 30s llcat -u $server -m "$model" -k $(<~/openrouter.key) "Extract and print the mcp server configuration json. Do not be conversational. If there is none, respond with the word 'none'" > "$base/_mcp-config.json"
+      lc="$?"
+      echo $lc "$base"
+      if [[ $lc -ne "0" || ! -s "$base/_mcp-config.json" ]]; then
+        echo "woops: $i"
+        (( n++ ))
+        [[ n == ${#models[@]} ]] && n=0
+        model="${models[$n]}"
+        echo "using next model: $model"
+        sleep 4
+      fi
+    else
+       echo "F $base"
+    fi
+  else
+    echo "!" "$base"
+  fi
+done
