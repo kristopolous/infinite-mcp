@@ -1,4 +1,5 @@
 #!/bin/bash
+[[ -d servers ]] || git clone https://github.com/modelcontextprotocol/servers
 grep -Po 'https://github.com/[^?#"\s)]*' servers/README.md | grep -E 'https://github[^)]*/[^)]*/[^)]*' | cut -c 20- | cut -d '/' -f 1,2 | sort | uniq | while read i; do
     echo -e "\n\n$i"
     if [[ ! -e "$i" ]]; then

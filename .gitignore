@@ -1,2 +1,6 @@
 qdrant_db
 chroma_db
+__pycache__
+gh/*
+.direnv
+history.txt
