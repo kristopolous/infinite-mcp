@@ -1,0 +1,11 @@
+torch
+transformers
+tqdm
+chromadb
+python-magic
+html2text
+chardet
+sentence-transformers
+spacy
+qdrant_client
+numpy
