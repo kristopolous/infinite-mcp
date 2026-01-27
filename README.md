@@ -67,7 +67,7 @@ InfiniteMCP exposes three powerful tools to Claude:
 - Node.js 18+ (for running discovered MCP servers)
 
 ### Setup
-Local install requires a CUDA core
+Local install will try a cuda and fallback to cpu
 
 ```bash
 # Clone the repository
