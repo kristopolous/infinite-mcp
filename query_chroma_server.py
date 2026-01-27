@@ -41,11 +41,7 @@ def search():
       if 'npx' in cand or 'uvx' in cand:
           formatted_results.append(metadata['oneline'])
   
-    return jsonify({
-        "query": query_text,
-        "results": formatted_results,
-        "count": len(formatted_results)
-    })
+    return jsonify({ "results": formatted_results })
     
 
 @app.route('/health', methods=['GET'])
