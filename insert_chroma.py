@@ -79,14 +79,14 @@ while True:
               for what in f.readlines():
                 if "`" not in what:
                   lines.append(what)
-              configs.append("\n".join(lines))
+              config.append(re.sub(r'/\s+/', ' ', " ".join(lines)))
 
             with open(oneline, 'r', encoding=encoding, errors='replace') as f:
               lines = []
               for what in f.readlines():
                 if "`" not in what:
                   lines.append(what)
-              onelines.append("\n".join(lines))
+              onelines.append(re.sub(r'/\s+/', ' ', " ".join(lines)))
 
             with open(fp, 'r', encoding=encoding, errors='replace') as f:
                 processed_text = f.read()

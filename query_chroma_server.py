@@ -9,9 +9,6 @@ import torch
 import common
 
 app = Flask(__name__)
-RES_START = 100
-res_len = RES_START
-
 # Initialize model and client
 client = chromadb.PersistentClient(path="./chroma_db")
 collection = client.get_collection(name="documents")
@@ -28,7 +25,7 @@ def search():
     query_embedding = model.encode(query_text)
     query_params = {
       'query_embeddings': query_embedding.tolist(),
-      'n_results': res_len 
+      'n_results': 5
     }
     results = collection.query(**query_params)
     res = list(zip(
@@ -43,8 +40,7 @@ def search():
       formatted_results.append({
           "id": doc_id,
           "oneline": metadata['oneline'],
-          "config": metadata['config'],
-          "readme": document
+          "config": metadata['config']
       })
   
     return jsonify({

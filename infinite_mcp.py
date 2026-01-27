@@ -24,8 +24,9 @@ SEARCH_API_URL = "http://localhost:5000/search"
 
 app = Server("infinitemcp")
 
+
 @app.list_tools()
-async def list_tools() -> list[Tool]:
+async def handle_list_tools() -> list[Tool]:  # <-- Changed name
     """List available tools for InfiniteMCP"""
     return [
         Tool(
@@ -37,11 +38,6 @@ async def list_tools() -> list[Tool]:
                     "query": {
                         "type": "string",
                         "description": "Natural language query describing what you want to do (e.g., 'web search', 'github integration', 'file system access')"
-                    },
-                    "limit": {
-                        "type": "integer",
-                        "description": "Maximum number of results to return (default: 5)",
-                        "default": 5
                     }
                 },
                 "required": ["query"]
@@ -137,24 +133,12 @@ async def search_mcp(arguments: dict) -> list[TextContent]:
         async with httpx.AsyncClient() as client:
             response = await client.get(
                 SEARCH_API_URL,
-                params={"q": query, "limit": limit},
+                params={"q": query},
                 timeout=30.0
             )
             response.raise_for_status()
             data = response.json()
         
-        # Expected format from search API:
-        # {
-        #   "results": [
-        #     {
-        #       "name": "mcp-openproject",
-        #       "config": {
-        #         "one_liner": ["uvx", "mcp-openproject", "server", "--stdio"],
-        #         "requires": ["OPENPROJECT_BASE_URL", "OPENPROJECT_API_KEY"]
-        #       }
-        #     }
-        #   ]
-        # }
         
         results = data.get("results", [])
         
@@ -291,7 +275,7 @@ async def query_mcp_server_tools(command: list[str]) -> list[dict]:
     TODO: Implement actual MCP client connection via stdio
     """
     # This will:
-    # 1. Start subprocess with command
+    # 1. Start subprocess pith command
     # 2. Connect via MCP stdio protocol
     # 3. Send initialize request
     # 4. Send tools/list request
@@ -322,12 +306,6 @@ async def execute_mcp_function(
     
     TODO: Implement actual MCP client connection and tool execution
     """
-    # This will:
-    # 1. Start subprocess with command and env_vars
-    # 2. Connect via MCP stdio protocol
-    # 3. Send initialize request
-    # 4. Send tools/call request with function_name and parameters
-    # 5. Return result
     
     return {
         "status": "success",
@@ -348,4 +326,14 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    import sys
+    import signal
+    
+    def signal_handler(sig, frame):
+        print("\nShutting down...", file=sys.stderr)
+        sys.exit(0)
+    
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+    
+    asyncio.run(main(), debug=True)
