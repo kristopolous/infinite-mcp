@@ -7,9 +7,9 @@ from collections import Counter
 import chromadb
 import torch
 import common
+import json
 
 app = Flask(__name__)
-# Initialize model and client
 client = chromadb.PersistentClient(path="./chroma_db")
 collection = client.get_collection(name="documents")
 model = common.model
@@ -39,7 +39,9 @@ def search():
     for doc_id, distance, metadata, document in res:
       cand = metadata['oneline']
       if 'npx' in cand or 'uvx' in cand:
-          formatted_results.append(metadata['oneline'])
+          res = json.loads(metadata['oneline'])
+          res['name'] = doc_id
+          formatted_results.append(res)
   
     return jsonify({ "results": formatted_results })
     

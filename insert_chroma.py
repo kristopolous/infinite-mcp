@@ -120,7 +120,7 @@ while True:
         collection.add(
             embeddings=embeddings.tolist(),
             documents=texts,
-            ids=[f"doc_{j.replace('/', '_')}" for j in stubs],
+            ids=[j.replace('/', '_') for j in stubs],
             metadatas=meta
         )
       except:
