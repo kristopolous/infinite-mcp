@@ -36,12 +36,17 @@ def search():
     
     #import pdb
     #pdb.set_trace()
+    res1 = []
     for a in res:
-      mm = json.loads(a[2]['meta'])
-      
-      a[1] -= min(mm['stargazerCount'], 500) / 1000
+      print(a[2])
+      try:
+          mm = json.loads(a[2]['meta'])
+          res1.append([a[0], a[1] - min(mm['stargazerCount'], 500) / 1000, a[2]])
+      except:
+          print(a[2])
 
-    res = sorted(res, key=lambda x: x[1])
+    res = sorted(res1, key=lambda x: x[1])
+    res = res[0:3]
 
     formatted_results = []
     for doc_id, distance, metadata in res:
@@ -49,6 +54,7 @@ def search():
       if 'npx' in cand or 'uvx' in cand:
           res = json.loads(metadata['oneline'])
           res['name'] = doc_id
+          res['score'] = distance
           formatted_results.append(res)
   
     return jsonify({ "results": formatted_results })
