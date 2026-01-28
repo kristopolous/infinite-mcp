@@ -42,12 +42,34 @@ signal.signal(signal.SIGUSR2, _decrease_batch)
 
 counter = 0
 
+def reader(config):
+  lines = []
+  encoding = detect_encoding(config) 
+  with open(config, 'r', encoding=encoding, errors='replace') as f:
+    lines = []
+    for what in f.readlines():
+      if "`" not in what:
+        lines.append(what)
+  return re.sub(r'\s+', ' ', " ".join(lines))
+
+def getter(fp, path):
+  config = Path(os.path.dirname(fp)) / path
+  if not os.path.isfile(config):
+    print(f"can't do {fp} no config")
+    return
+  with open(config, 'r') as f:
+    if f.read().strip() == "none":
+      print(f"can't do {config} bad json")
+
+  return config
+
 i = -1 
 while True:
     texts = []
     configs = []
     onelines = []
     valid_paths = []
+    metas = []
     while len(valid_paths) < BATCH_SIZE:
         i += 1
         sys.stdout.write('.')
@@ -57,37 +79,23 @@ while True:
             sys.exit(0)
 
         try:
-            config = Path(os.path.dirname(fp)) / "_mcp-config.json"
-            if not os.path.isfile(config):
-              print(f"can't do {fp} no config")
+            meta = getter(fp, "_meta-info.json")
+            if not meta:
               continue
-            with open(config, 'r') as f:
-              if f.read().strip() == "none":
-                print(f"can't do {config} bad json")
 
-            oneline = Path(os.path.dirname(fp)) / "_one-liner.json"
-            if not os.path.isfile(oneline):
-              print(f"can't do {fp} no oneline")
+            config = getter(fp, "_mcp-config.json")
+            if not config:
               continue
-            with open(oneline, 'r') as f:
-              if f.read().strip() == "none":
-                print(f"can't do {oneline} bad json")
+
+            oneline = getter(fp, "_one-liner.json")
+            if not oneline:
+              continue
+
+            configs.append(reader(config))
+            onelines.append(reader(oneline))
+            metas.append(reader(meta))
 
             encoding = detect_encoding(fp) 
-            with open(config, 'r', encoding=encoding, errors='replace') as f:
-              lines = []
-              for what in f.readlines():
-                if "`" not in what:
-                  lines.append(what)
-              configs.append(re.sub(r'\s+', ' ', " ".join(lines)))
-
-            with open(oneline, 'r', encoding=encoding, errors='replace') as f:
-              lines = []
-              for what in f.readlines():
-                if "`" not in what:
-                  lines.append(what)
-              onelines.append(re.sub(r'\s+', ' ', " ".join(lines)))
-
             with open(fp, 'r', encoding=encoding, errors='replace') as f:
                 processed_text = f.read()
                 texts.append(processed_text)
@@ -114,7 +122,7 @@ while True:
       for i in range(len(valid_paths)):
         stub = "/".join(valid_paths[i].split("/")[-3:-1])
         stubs.append(stub)
-        meta.append({'file_path': stub, 'config': configs[i], 'oneline': onelines[i] })
+        meta.append({'file_path': stub, 'meta': metas[i], 'config': configs[i], 'oneline': onelines[i] })
 
       try:
         collection.add(
