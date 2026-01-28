@@ -90,9 +90,19 @@ while True:
             oneline = getter(fp, "_one-liner.json")
             if not oneline:
               continue
+            try_one = reader(oneline)
+            if 'npx' in try_one:
+              if '@' not in try_one:
+                continue
+            elif 'your' in try_one and 'program' in try_one:
+              continue
+            elif 'uvx' in try_one:
+              print(try_one)
+            else:
+              continue
 
             configs.append(reader(config))
-            onelines.append(reader(oneline))
+            onelines.append(try_one)
             metas.append(reader(meta))
 
             encoding = detect_encoding(fp) 
