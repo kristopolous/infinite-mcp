@@ -7,7 +7,7 @@
 
 ## What is InfiniteMCP?
 
-InfiniteMCP is a an MCP server that acts as a universal gateway to thousands of other MCP servers. Instead of manually configuring each MCP server you want to use, InfiniteMCP lets Claude discover, understand, and use any MCP server on demand through natural language queries.
+InfiniteMCP is an MCP server that acts as a universal gateway to thousands of other MCP servers. Instead of manually configuring each MCP server you want to use or polluting your context window, InfiniteMCP lets your agent discover, understand, and use any MCP server on demand through natural language queries.
 
 Think of it as an "MCP server of MCP servers" - a single connection that unlocks the entire MCP ecosystem.
 
